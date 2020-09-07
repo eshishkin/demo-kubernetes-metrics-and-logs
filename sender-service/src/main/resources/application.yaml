@@ -6,6 +6,9 @@ application:
     exchange-name: exhange
     queues:
       events-queue-name: events
+  redis:
+    url: redis-server
+    port: 6379
 
 
 management:
@@ -19,7 +22,7 @@ management:
       probes.enabled: true
       group:
         readiness:
-          include: rabbit
+          include: rabbit, redis
           show-components: always
           show-details: always
   health:

@@ -1,8 +1,11 @@
 package org.eshishkin.edu.sender.web;
 
+import java.util.List;
+import org.eshishkin.edu.sender.model.Event;
 import org.eshishkin.edu.sender.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,5 +22,10 @@ public class TestController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void createRandomUser() {
         userService.createRandomUser();
+    }
+
+    @GetMapping("/lastEvents")
+    public List<Event> getLastEvents() {
+        return userService.getLastEvents();
     }
 }
