@@ -6,3 +6,30 @@ application:
     exchange-name: exhange
     queues:
       events-queue-name: events
+
+
+management:
+  endpoints.web.exposure.include: info, health, metrics, prometheus
+  endpoint:
+    prometheus:
+      enable: true
+    health:
+      show-details: always
+      show-components: always
+      probes.enabled: true
+      group:
+        readiness:
+          include: rabbit
+          show-components: always
+          show-details: always
+  health:
+    defaults.enabled: true
+    livenessstate.enabled: true
+    readinessstate.enabled: true
+
+spring.jackson.serialization.indent_output: true
+
+logging:
+  pattern.console: '[%date{"yyyy-MM-dd''T''HH:mm:ss,SSSXXX"}] [%thread] %level %logger - %msg%n'
+  level:
+    org.eshishkin.edu: DEBUG
