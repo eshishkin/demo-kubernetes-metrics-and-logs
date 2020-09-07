@@ -1,0 +1,34 @@
+version: "2"
+
+services:
+  redis:
+    image: redis:6.0.7
+    networks:
+      backend:
+        aliases:
+          - redis-server
+
+  rabbit:
+    image: rabbitmq:3.8.8-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      backend:
+        aliases:
+          - rabbit-broker
+
+  app:
+    image: eshishkin/k8s-examples/sender-service
+    mem_limit: 128m
+    expose:
+      - "8080"
+    ports:
+      - "18080:8080"
+    networks:
+      backend:
+        aliases:
+          - sender-service
+
+networks:
+  backend:
