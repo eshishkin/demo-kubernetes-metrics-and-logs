@@ -1,1 +1,8 @@
-
+application:
+  jms:
+    broker: rabbit-broker
+    user: admin
+    password: admin
+    exchange-name: exhange
+    queues:
+      events-queue-name: events
