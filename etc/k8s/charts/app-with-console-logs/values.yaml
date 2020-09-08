@@ -1,0 +1,9 @@
+applications:
+  sender_service:
+    tag: latest
+    imagePullPolicy: Never
+    replicas: 1
+  receiver_service:
+    tag: latest
+    imagePullPolicy: Never
+    replicas: 1

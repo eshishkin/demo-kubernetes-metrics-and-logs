@@ -1,0 +1,7 @@
+apiVersion: v2
+type: application
+
+name: example-kubernetes-metrics-and-logs
+version: 1.0.0
+
+description: Example project for testing approaches for logging and monitoring in Kubernetes

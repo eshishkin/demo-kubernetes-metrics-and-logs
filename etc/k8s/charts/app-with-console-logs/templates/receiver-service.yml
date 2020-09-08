@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: receiver-service
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: receiver-service
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: receiver-service
+  labels:
+    app: receiver-service
+spec:
+  replicas: {{ .Values.applications.receiver_service.replicas }}
+  selector:
+    matchLabels:
+      app: receiver-service
+  template:
+    metadata:
+      annotations:
+        prometheus/scrape_enabled: "true"
+        prometheus/scrape_endpoint: "/actuator/prometheus"
+        prometheus/scrape_port: "8080"
+      labels:
+        app: receiver-service
+    spec:
+      containers:
+        - name: receiver-service
+          image: "eshishkin/k8s-examples/receiver-service:{{ .Values.applications.receiver_service.tag }}"
+          imagePullPolicy: {{ .Values.applications.receiver_service.imagePullPolicy }}
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: -Xms128m -Xmx128m -XX:+UseContainerSupport -XX:+AlwaysActAsServerClassMachine -XX:+AlwaysPreTouch
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1
+              memory: 256Mi
