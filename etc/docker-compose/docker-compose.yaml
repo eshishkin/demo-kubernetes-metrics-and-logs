@@ -18,7 +18,7 @@ services:
         aliases:
           - rabbit-broker
 
-  app:
+  sender-app:
     image: eshishkin/k8s-examples/sender-service
     mem_limit: 128m
     expose:
@@ -29,6 +29,18 @@ services:
       backend:
         aliases:
           - sender-service
+
+  receiver-app:
+    image: eshishkin/k8s-examples/receiver-service
+    mem_limit: 128m
+    expose:
+      - "8080"
+    ports:
+      - "28080:8080"
+    networks:
+      backend:
+        aliases:
+          - receiver-service
 
 networks:
   backend:
