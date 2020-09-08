@@ -1,6 +1,14 @@
 version: "2"
 
 services:
+  mongo:
+    image: mongo:4.2.7
+    mem_limit: 64m
+    networks:
+      backend:
+        aliases:
+          - mongo-service
+
   redis:
     image: redis:6.0.7
     networks:
@@ -25,6 +33,8 @@ services:
       - "8080"
     ports:
       - "18080:8080"
+    environment:
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx256m -XX:+UseContainerSupport -XX:+AlwaysActAsServerClassMachine -XX:+AlwaysPreTouch
     networks:
       backend:
         aliases:
@@ -37,6 +47,8 @@ services:
       - "8080"
     ports:
       - "28080:8080"
+    environment:
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx256m -XX:+UseContainerSupport -XX:+AlwaysActAsServerClassMachine -XX:+AlwaysPreTouch
     networks:
       backend:
         aliases:

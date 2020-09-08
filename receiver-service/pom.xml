@@ -11,7 +11,7 @@
     <groupId>org.eshishkin.edu</groupId>
     <artifactId>receiver-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>sender-service</name>
+    <name>receiver-service</name>
     <description>Demo project that receives data from a topic</description>
 
     <properties>
@@ -34,6 +34,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
 
         <dependency>
