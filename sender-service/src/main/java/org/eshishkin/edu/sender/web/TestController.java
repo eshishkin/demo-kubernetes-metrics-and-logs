@@ -1,7 +1,9 @@
 package org.eshishkin.edu.sender.web;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.eshishkin.edu.sender.model.Event;
+import org.eshishkin.edu.sender.service.LoadGenerationService;
 import org.eshishkin.edu.sender.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,9 @@ public class TestController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LoadGenerationService loadGenerationService;
+
     @PostMapping("/createRandomUser")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void createRandomUser() {
@@ -28,4 +33,11 @@ public class TestController {
     public List<Event> getLastEvents() {
         return userService.getLastEvents();
     }
+
+    @PostMapping("/heavyTask")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void heavyTask() {
+        CompletableFuture.runAsync(() -> loadGenerationService.heavyTask());
+    }
+
 }
