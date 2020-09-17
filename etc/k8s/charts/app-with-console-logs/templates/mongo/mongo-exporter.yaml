@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-exporter
+  template:
+    metadata:
+      annotations:
+        prometheus/scrape_enabled: "true"
+        prometheus/scrape_endpoint: "/metrics"
+        prometheus/scrape_port: "9216"
+      labels:
+        app: mongo-exporter
+    spec:
+      containers:
+        - name: mongodb-exporter
+          env:
+            - name: MONGODB_URI
+              value: "mongodb://mongo-service:27017"
+          image: "ssheehy/mongodb-exporter:0.10.0"
+          imagePullPolicy: IfNotPresent
+          args:
+            - --collect.collection
+            - --collect.database
+            - --collect.indexusage
+            - --collect.topmetrics
+            - --collect.connpoolstats
+          ports:
+            - name: metrics
+              containerPort: 9216
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: metrics
+            initialDelaySeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: metrics
+            initialDelaySeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              cpu: 10m
+              memory: 64Mi
