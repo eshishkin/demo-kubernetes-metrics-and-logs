@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: smtp-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 25
+      targetPort: 25
+  selector:
+    app: smtp-service
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smtp-service
+  labels:
+    app: smtp-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smtp-service
+  template:
+    metadata:
+      labels:
+        app: smtp-service
+    spec:
+      containers:
+        - name: smtp
+          image: namshi/smtp:latest
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 50m
+              memory: 64Mi

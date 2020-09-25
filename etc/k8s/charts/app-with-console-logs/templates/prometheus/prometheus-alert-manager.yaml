@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-alert-manager-service
+spec:
+  ports:
+    - port: 9093
+      targetPort: 9093
+  selector:
+    app: prometheus-alert-manager
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-alert-manager
+  labels:
+    app: prometheus-alert-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-alert-manager
+  template:
+    metadata:
+      labels:
+        app: prometheus-alert-manager
+    spec:
+      volumes:
+        - name: prometheus-alert-manager-config-storage
+          configMap:
+            name: prometheus-alert-manager-config
+      containers:
+        - name: alertmanager
+          image: prom/alertmanager:v0.21.0
+          args:
+            - --config.file=/etc/config/alertmanager.yml
+          volumeMounts:
+            - name: prometheus-alert-manager-config-storage
+              mountPath: /etc/config
+          readinessProbe:
+            httpGet:
+              path: /-/status
+              port: 9093
+            timeoutSeconds: 5

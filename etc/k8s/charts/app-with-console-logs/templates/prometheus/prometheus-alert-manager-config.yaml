@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-alert-manager-config
+data:
+  alertmanager.yml: |-
+    global:
+      smtp_from: prometheus@example.com
+      smtp_hello: smtp-service
+      smtp_require_tls: false
+      smtp_smarthost: smtp-service:25
+
+    receivers:
+      - name: default-receiver
+        email_configs:
+          - send_resolved: true
+            to: eshishkin@mailinator.com
+    route:
+      receiver: 'default-receiver'
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      group_by: [db, services]

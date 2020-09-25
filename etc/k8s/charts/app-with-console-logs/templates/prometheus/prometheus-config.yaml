@@ -10,6 +10,7 @@ data:
       evaluation_interval: 15s
 
     rule_files:
+      - "alert.rules.yml"
 
     scrape_configs:
       - job_name: selfcheck
@@ -48,3 +49,32 @@ data:
             regex: ([^:]+)(?::\d+)?;(\d+)
             replacement: $1:$2
             target_label: __address__
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+          - targets: ['prometheus-alert-manager-service:9093']
+
+  alert.rules.yml: |-
+    groups:
+    - name: example
+      rules:
+      - alert: MongoDown
+        expr: mongodb_up == 0 OR absent(mongodb_up) == 1
+        for: 1m
+        labels:
+          layer: db
+          severity: high
+        annotations:
+          summary: Mongo is down
+          message: Mongo is down
+
+      - alert: HighCpuUtilization
+        expr: rate(process_cpu_usage{app="receiver-service"}[5m]) >= 0.5
+        for: 5m
+        labels:
+          layer: services
+          severity: warn
+        annotations:
+          summary: High CPU utilization
+          message: {{`"High CPU utilization (service: {{$labels.app}}, instance: {{$labels.instance}})"`}}
