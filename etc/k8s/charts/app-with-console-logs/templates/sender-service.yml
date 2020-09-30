@@ -25,6 +25,7 @@ kind: Service
 metadata:
   name: sender-service
 spec:
+  type: LoadBalancer
   ports:
     - port: 8080
       targetPort: 8080
