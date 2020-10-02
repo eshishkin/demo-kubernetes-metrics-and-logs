@@ -41,6 +41,6 @@ spec:
               mountPath: /etc/config
           readinessProbe:
             httpGet:
-              path: /-/status
+              path: /#/status
               port: 9093
             timeoutSeconds: 5
