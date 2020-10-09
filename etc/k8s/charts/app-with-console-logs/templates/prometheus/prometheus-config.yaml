@@ -11,11 +11,26 @@ data:
 
     rule_files:
       - "alert.rules.yml"
+      - "recording.rules.yml"
 
     scrape_configs:
       - job_name: selfcheck
         static_configs:
           - targets: ['localhost:9090']
+
+      - job_name: k8s-node-checker
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_node_name]
+            action: replace
+            target_label: kubernetes_node_name
+
+          - action: labeldrop
+            regex: __meta_kubernetes_node_label(.+)
+
+          - action: labeldrop
+            regex: __meta_kubernetes_node_annotation(.+)
 
       - job_name: k8s-pod-checker
         kubernetes_sd_configs:
@@ -55,19 +70,40 @@ data:
         - static_configs:
           - targets: ['prometheus-alert-manager-service:9093']
 
+  recording.rules.yml: |-
+    groups:
+    - name: example
+      rules:
+      - record: up
+        expr: mongodb_up
+        labels:
+          app: mongo
+      - record: service_average_response_time
+        expr: rate(http_server_requests_seconds_sum[2m])/rate(http_server_requests_seconds_count[2m])
+
   alert.rules.yml: |-
     groups:
     - name: example
       rules:
       - alert: MongoDown
         expr: mongodb_up == 0 OR absent(mongodb_up) == 1
-        for: 1m
+        for: 30s
         labels:
           layer: db
           severity: high
         annotations:
           summary: Mongo is down
-          message: Mongo is down
+          message: {{`"Mongo is down"`}}
+
+      - alert: RedisDown
+        expr: up{app="redis-server"} == 0 OR absent(up{app="redis-server"}) == 1
+        for: 30s
+        labels:
+          layer: db
+          severity: high
+        annotations:
+          summary: Redis is down
+          message: {{`"Redis is down"`}}
 
       - alert: HighCpuUtilization
         expr: rate(process_cpu_usage{app="receiver-service"}[5m]) >= 0.5
@@ -77,4 +113,14 @@ data:
           severity: warn
         annotations:
           summary: High CPU utilization
-          message: {{`"High CPU utilization (service: {{$labels.app}}, instance: {{$labels.instance}})"`}}
+          message: {{`"High CPU utilization (service: {{ $labels.app }}, instance: {{ $labels.instance }})"`}}
+
+      - alert: HighFailureRate
+        expr: rate(http_server_requests_seconds_count{status=~"5.*"}[1m]) > 1
+        for: 30s
+        labels:
+          layer: services
+          severity: high
+        annotations:
+          summary: High request failure rate
+          message: {{`"High failure rate (service: {{ $labels.app }}, instance: {{ $labels.instance }}, request: {{ $labels.uri }}, status: {{ $labels.status }})"`}}
