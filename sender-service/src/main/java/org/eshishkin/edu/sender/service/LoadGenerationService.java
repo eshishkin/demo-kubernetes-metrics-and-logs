@@ -10,7 +10,7 @@ public class LoadGenerationService {
 
     @Timed(value = "very_long_task", longTask = true)
     public void heavyTask() {
-        generateLargeRsaKey(8192);
+        generateLargeRsaKey(18192);
     }
 
     @SneakyThrows
