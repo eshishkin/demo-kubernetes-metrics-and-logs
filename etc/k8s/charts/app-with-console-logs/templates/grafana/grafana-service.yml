@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: grafana-service
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-service
+  labels:
+    app: grafana-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana-service
+  template:
+    metadata:
+      labels:
+        app: grafana-service
+    spec:
+      volumes:
+        - name: grafana-custom-config-storage
+          configMap:
+            name: grafana-custom-config
+
+        - name: grafana-datasource-config-storage
+          configMap:
+            name: grafana-datasource-config
+
+        - name: grafana-dashboard-config-storage
+          configMap:
+            name: grafana-dashboard-config
+
+        - name: grafana-storage
+          emptyDir: {}
+
+        - name: grafana-log-storage
+          emptyDir: {}
+      containers:
+        - name: grafana
+          image: grafana/grafana:7.1.5
+          args:
+            - --config=/etc/grafana/custom/custom.ini
+          volumeMounts:
+            - name: grafana-custom-config-storage
+              mountPath: /etc/grafana/custom
+
+            - name: grafana-datasource-config-storage
+              mountPath: /etc/grafana/provisioning/datasources
+
+            - name: grafana-dashboard-config-storage
+              mountPath: /etc/grafana/provisioning/dashboards
+
+            - name: grafana-log-storage
+              mountPath: /var/log/grafana
+
+            - name: grafana-storage
+              mountPath: /var/lib/grafana

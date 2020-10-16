@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-custom-config
+data:
+  custom.ini: |-
+    [users]
+    default_theme = light
+
+    [security]
+    admin_user = {{ .Values.grafana.admin.name }}
+    admin_ = {{ .Values.grafana.admin.password }}

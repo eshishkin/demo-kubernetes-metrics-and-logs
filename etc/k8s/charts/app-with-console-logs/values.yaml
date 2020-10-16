@@ -7,3 +7,8 @@ applications:
     tag: latest
     imagePullPolicy: Never
     replicas: 1
+
+grafana:
+  admin:
+    name: admin
+    password: admin

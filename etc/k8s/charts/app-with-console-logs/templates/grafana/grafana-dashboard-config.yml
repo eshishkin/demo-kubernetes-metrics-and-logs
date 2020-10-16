@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-config
+data:
+  dashboard-provider.yml: |-
+    apiVersion: 1
+
+    providers:
+      - name: 'Simple Dashboard Provider'
+        folder: ''
+        folderUid: ''
+        type: file
+        disableDeletion: true
+        editable: false
+        updateIntervalSeconds: 10
+        allowUiUpdates: false
+        options:
+          path: /etc/grafana/provisioning/dashboards
+          foldersFromFilesStructure: true
+  service_jvm_dashboard.json: |-
+{{ .Files.Get "dashboards/service_jvm_dashboard.json" | indent 8}}
+
+  mongo_dashboard.json: |-
+{{ .Files.Get "dashboards/mongo_dashboard.json" | indent 8}}
+
+  redis_dashboard.json: |-
+{{ .Files.Get "dashboards/redis_dashboard.json" | indent 8 }}
