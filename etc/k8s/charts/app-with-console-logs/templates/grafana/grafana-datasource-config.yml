@@ -12,3 +12,11 @@ data:
         isDefault: true
         version: 1
         editable: true
+
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki-service:3100
+        isDefault: false
+        version: 1
+        editable: false

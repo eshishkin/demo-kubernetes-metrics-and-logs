@@ -18,6 +18,7 @@ data:
     @INCLUDE input-kubernetes.conf
     @INCLUDE filter-kubernetes.conf
     @INCLUDE output-file.conf
+    @INCLUDE output-loki.conf
 
   input-kubernetes.conf: |
     [INPUT]
@@ -49,6 +50,16 @@ data:
         File      output.txt
         Format    plain
         Match     *
+
+  output-loki.conf: |
+    [OUTPUT]
+        name                    loki
+        host                    loki-service
+        port                    3100
+        match                   *
+        labels                  job=fluentbit
+        label_keys              $data['logger']
+        auto_kubernetes_labels  On
 
   parsers.conf: |
     [PARSER]

@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: fluent-bit
-          image: fluent/fluent-bit:1.5-debug
+          image: fluent/fluent-bit:1.6.1-debug
           imagePullPolicy: Always
           ports:
             - containerPort: 2020
@@ -43,10 +43,6 @@ spec:
 
             - name: fluent-bit-config
               mountPath: /fluent-bit/etc/
-
-#            - name: mnt
-#              mountPath: /mnt
-#              readOnly: true
       terminationGracePeriodSeconds: 10
       volumes:
         - name: varlog
@@ -60,9 +56,5 @@ spec:
         - name: fluent-bit-config
           configMap:
             name: fluent-bit-config
-
-#        - name: mnt
-#          hostPath:
-#            path: /mnt
       serviceAccountName: fluent-bit
 
