@@ -51,6 +51,7 @@ spec:
         prometheus/scrape_enabled: "true"
         prometheus/scrape_endpoint: "/actuator/prometheus"
         prometheus/scrape_port: "8080"
+        fluentbit.io/parser: "appservices"
       labels:
         app: sender-service
     spec:
