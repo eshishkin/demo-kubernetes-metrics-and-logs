@@ -8,7 +8,7 @@ data:
   fluent-bit.conf: |
     [SERVICE]
         Flush         5
-        Log_Level     debug
+        Log_Level     info
         Daemon        off
         Parsers_File  parsers.conf
         HTTP_Server   On
@@ -54,12 +54,12 @@ data:
   output-loki.conf: |
     [OUTPUT]
         name                    loki
-        host                    loki-service
-        port                    3100
+        host                    ${FLUENT_LOKI_HOST}
+        port                    ${FLUENT_LOKI_PORT}
         match                   *
         labels                  job=fluentbit
-        label_keys              $data['logger']
-        auto_kubernetes_labels  On
+        label_keys              $stream
+        auto_kubernetes_labels  on
 
   parsers.conf: |
     [PARSER]
