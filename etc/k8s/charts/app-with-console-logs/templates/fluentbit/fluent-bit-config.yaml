@@ -57,9 +57,9 @@ data:
         host                    ${FLUENT_LOKI_HOST}
         port                    ${FLUENT_LOKI_PORT}
         match                   *
-        labels                  job=fluentbit
+        labels                  job=fluentbit, pod=$kubernetes['pod_name'], app=$kubernetes['labels']['app']
         label_keys              $stream
-        auto_kubernetes_labels  on
+        auto_kubernetes_labels  off
 
   parsers.conf: |
     [PARSER]

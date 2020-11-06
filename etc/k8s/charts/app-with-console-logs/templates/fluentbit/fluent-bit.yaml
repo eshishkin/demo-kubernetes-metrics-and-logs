@@ -29,10 +29,6 @@ spec:
           ports:
             - containerPort: 2020
           env:
-            - name: FLUENT_ELASTICSEARCH_HOST
-              value: "elastic-search"
-            - name: FLUENT_ELASTICSEARCH_PORT
-              value: "9200"
             - name: FLUENT_LOKI_HOST
               value: "loki-service"
             - name: FLUENT_LOKI_PORT
