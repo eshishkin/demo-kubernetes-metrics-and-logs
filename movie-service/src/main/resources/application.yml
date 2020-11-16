@@ -8,7 +8,3 @@ quarkus:
   liquibase:
     change-log: liquibase/changes.xml
     migrate-at-start: true
-
-greeting:
-  message: "hello"
-  name: "quarkus"

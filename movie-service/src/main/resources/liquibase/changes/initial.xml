@@ -8,7 +8,7 @@
         <comment>Initial schema for 'movie' table</comment>
 
         <createTable tableName="movie">
-            <column name="ID" type="binary(16)">
+            <column name="ID" type="varchar(36)">
                 <constraints primaryKey="true"/>
             </column>
 
