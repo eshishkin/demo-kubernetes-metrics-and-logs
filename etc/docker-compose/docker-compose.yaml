@@ -9,6 +9,16 @@ services:
         aliases:
           - mongo-service
 
+  mysql:
+    image: mysql:5.7.32
+    mem_limit: 64m
+    ports:
+      - "3306:3306"
+    networks:
+      backend:
+        aliases:
+          - mysql-service
+
   redis:
     image: redis:6.0.7
     networks:
