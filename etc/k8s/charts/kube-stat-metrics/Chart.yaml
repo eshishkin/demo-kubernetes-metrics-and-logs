@@ -1,0 +1,7 @@
+apiVersion: v2
+type: application
+
+name: kube-stat-metrics
+version: 1.0.0
+
+description: Helm chart that starts kube-stat-metrics service inside k8s cluster
