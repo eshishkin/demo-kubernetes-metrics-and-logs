@@ -1,0 +1,52 @@
+apiVersion: skaffold/v2beta9
+kind: Config
+build:
+  local:
+    concurrency: 3
+  tagPolicy:
+    customTemplate:
+      template: "{{ printf \"%.10s\" .SHA}}"
+      components:
+        - name: SHA
+          gitCommit:
+            variant: CommitSha
+  artifacts:
+    - image: eshishkin/k8s-examples/sender-service
+      context: sender-service
+      jib:
+        type: maven
+    - image: eshishkin/k8s-examples/receiver-service
+      context: receiver-service
+      jib:
+        type: maven
+
+deploy:
+  helm:
+    releases:
+      - name: mongo
+        chartPath: ./etc/k8s/charts/mongo
+        wait: true
+
+      - name: mailer
+        chartPath: ./etc/k8s/charts/mailer
+        wait: true
+
+      - name: broker
+        chartPath: ./etc/k8s/charts/message-broker
+        wait: true
+
+      - name: redis
+        chartPath: ./etc/k8s/charts/redis
+        wait: true
+
+      - name: sender-service
+        chartPath: ./etc/k8s/charts/sender-service
+        recreatePods: false
+        artifactOverrides:
+          application.image: eshishkin/k8s-examples/sender-service
+
+      - name: receiver-service
+        chartPath: ./etc/k8s/charts/receiver-service
+        recreatePods: false
+        artifactOverrides:
+          application.image: eshishkin/k8s-examples/receiver-service
