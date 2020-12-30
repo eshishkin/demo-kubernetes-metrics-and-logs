@@ -1,0 +1,7 @@
+apiVersion: v2
+type: application
+
+name: mongo
+version: 1.0.0
+
+description: Helm chart with Mongo DB
