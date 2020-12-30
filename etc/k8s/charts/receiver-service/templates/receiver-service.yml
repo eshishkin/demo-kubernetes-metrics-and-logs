@@ -19,7 +19,7 @@ metadata:
   labels:
     app: receiver-service
 spec:
-  replicas: {{ .Values.applications.receiver_service.replicas }}
+  replicas: {{ .Values.application.replicas }}
   selector:
     matchLabels:
       app: receiver-service
@@ -35,8 +35,8 @@ spec:
     spec:
       containers:
         - name: receiver-service
-          image: "eshishkin/k8s-examples/receiver-service:{{ .Values.applications.receiver_service.tag }}"
-          imagePullPolicy: {{ .Values.applications.receiver_service.imagePullPolicy }}
+          image: "{{ .Values.application.image }}"
+          imagePullPolicy: {{ .Values.application.imagePullPolicy }}
           env:
             - name: JAVA_TOOL_OPTIONS
               value: -Xms128m -Xmx128m -XX:+UseContainerSupport -XX:+AlwaysActAsServerClassMachine -XX:+AlwaysPreTouch
