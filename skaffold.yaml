@@ -25,18 +25,22 @@ deploy:
     releases:
       - name: mongo
         chartPath: ./etc/k8s/charts/mongo
+        upgradeOnChange: false
         wait: true
 
       - name: mailer
         chartPath: ./etc/k8s/charts/mailer
+        upgradeOnChange: false
         wait: true
 
       - name: broker
         chartPath: ./etc/k8s/charts/message-broker
+        upgradeOnChange: false
         wait: true
 
       - name: redis
         chartPath: ./etc/k8s/charts/redis
+        upgradeOnChange: false
         wait: true
 
       - name: sender-service
@@ -50,3 +54,13 @@ deploy:
         recreatePods: false
         artifactOverrides:
           application.image: eshishkin/k8s-examples/receiver-service
+
+profiles:
+  - name: monitoring
+    patches:
+      - op: add
+        path: /deploy/helm/releases
+        value:
+          - name: monitoring-tools
+            chartPath: ./etc/k8s/charts/monitoring-tools
+            wait: true
