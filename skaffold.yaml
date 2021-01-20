@@ -28,11 +28,6 @@ deploy:
         upgradeOnChange: false
         wait: true
 
-      - name: mailer
-        chartPath: ./etc/k8s/charts/mailer
-        upgradeOnChange: false
-        wait: true
-
       - name: broker
         chartPath: ./etc/k8s/charts/message-broker
         upgradeOnChange: false
@@ -57,10 +52,20 @@ deploy:
 
 profiles:
   - name: monitoring
+    activation:
+      - command: delete
     patches:
       - op: add
-        path: /deploy/helm/releases
+        path: /deploy/helm/releases/-
         value:
-          - name: monitoring-tools
-            chartPath: ./etc/k8s/charts/monitoring-tools
-            wait: true
+          name: mailer
+          chartPath: ./etc/k8s/charts/mailer
+          upgradeOnChange: false
+          wait: true
+      - op: add
+        path: /deploy/helm/releases/-
+        value:
+          name: monitoring-tools
+          chartPath: ./etc/k8s/charts/monitoring-tools
+          upgradeOnChange: false
+          wait: true
