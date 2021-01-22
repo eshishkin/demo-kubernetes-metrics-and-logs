@@ -1,0 +1,4 @@
+schemaVersion: 2.0.0
+
+metadataTest:
+  entrypoint: ["java", "-cp", "/app/resources:/app/classes:/app/libs/*", "org.eshishkin.edu.receiver.ReceiverServiceApplication"]

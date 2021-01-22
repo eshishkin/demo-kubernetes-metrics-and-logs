@@ -20,6 +20,16 @@ build:
       jib:
         type: maven
 
+test:
+  - image: eshishkin/k8s-examples/sender-service
+    structureTests:
+      - './etc/container-tests/common.yaml'
+      - './etc/container-tests/sender-service-test.yaml'
+  - image: eshishkin/k8s-examples/receiver-service
+    structureTests:
+      - './etc/container-tests/common.yaml'
+      - './etc/container-tests/receiver-service-test.yaml'
+
 deploy:
   helm:
     releases:
@@ -52,8 +62,6 @@ deploy:
 
 profiles:
   - name: monitoring
-    activation:
-      - command: delete
     patches:
       - op: add
         path: /deploy/helm/releases/-

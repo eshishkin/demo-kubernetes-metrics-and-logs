@@ -1,0 +1,12 @@
+schemaVersion: 2.0.0
+
+fileExistenceTests:
+  - name: 'Check libs'
+    path: '/app/libs/'
+    shouldExist: true
+  - name: 'Check resources'
+    path: '/app/resources/'
+    shouldExist: true
+  - name: 'Check application classes'
+    path: '/app/classes/'
+    shouldExist: true
