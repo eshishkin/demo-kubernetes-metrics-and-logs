@@ -1,4 +1,4 @@
 application:
-  image: eshishkin/k8s-examples/receiver-service:0edcbad4cb
+  image: eshishkin/k8s-examples/receiver-service:58d1d8007c8061f14446ab2fcfdfcd38725db80764491865353fd1e805d43311
   imagePullPolicy: Never
   replicas: 2
