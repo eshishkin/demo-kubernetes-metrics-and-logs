@@ -1,4 +1,4 @@
 application:
   image: eshishkin/k8s-examples/receiver-service:0edcbad4cb
   imagePullPolicy: Never
-  replicas: 1
+  replicas: 2
