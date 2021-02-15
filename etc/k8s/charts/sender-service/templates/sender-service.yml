@@ -41,7 +41,7 @@ metadata:
   labels:
     app: sender-service
 spec:
-  replicas: {{ .Values.applications.sender_service.replicas }}
+  replicas: {{ .Values.application.replicas }}
   selector:
     matchLabels:
       app: sender-service
@@ -57,8 +57,8 @@ spec:
     spec:
       containers:
         - name: sender-service
-          image: "eshishkin/k8s-examples/sender-service:{{ .Values.applications.sender_service.tag }}"
-          imagePullPolicy: {{ .Values.applications.sender_service.imagePullPolicy }}
+          image: "{{ .Values.application.image }}"
+          imagePullPolicy: {{ .Values.application.imagePullPolicy }}
           env:
             - name: JAVA_TOOL_OPTIONS
               value: -Xms128m -Xmx128m -XX:+UseContainerSupport -XX:+AlwaysActAsServerClassMachine -XX:+AlwaysPreTouch

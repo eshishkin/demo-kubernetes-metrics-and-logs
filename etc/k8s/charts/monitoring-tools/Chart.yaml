@@ -1,0 +1,7 @@
+apiVersion: v2
+type: application
+
+name: monitoring-tools
+version: 1.0.0
+
+description: Activates and sets up grafana and prometheus

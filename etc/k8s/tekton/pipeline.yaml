@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: git-repo
+spec:
+  type: git
+  params:
+    - name: revision
+      value: master
+    - name: url
+      value: https://github.com/eshishkin/demo-kubernetes-metrics-and-logs
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build
+spec:
+  params:
+  resources:
+    inputs:
+      - name: source
+        type: git
+  steps:
+    - name: receiver-build-and-push
+      image: maven:3.6.0-jdk-11-slim
+      args: ["mvn", "package"]
+      workingDir: /workspace/source/receiver-service
+
+    - name: sender-build-and-push
+      image: maven:3.6.0-jdk-11-slim
+      args: ["mvn", "package"]
+      workingDir: /workspace/source/sender-service

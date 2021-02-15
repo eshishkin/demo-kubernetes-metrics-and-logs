@@ -1,0 +1,7 @@
+apiVersion: v2
+type: application
+
+name: metrics-service
+version: 1.0.0
+
+description: Helm chart that starts metric service inside k8s cluster
