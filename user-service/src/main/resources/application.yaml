@@ -1,0 +1,27 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:3302/users
+
+logging.level:
+  com.mongodb.reactivestreams: DEBUG
+
+management:
+  metrics.export.prometheus.enabled: true
+  endpoints.web:
+    exposure.include: health,info,env,beans,prometheus,metrics
+  endpoint:
+    metrics.enabled: true
+    prometheus.enabled: true
+    health:
+      livenessstate.enabled: true
+      readinessstate.enabled: true
+      show-details: always
+      show-components: always
+      probes.enabled: true
+      rabbit.enabled: false
+      group:
+        readiness:
+          include: mongo
+          show-components: always
+          show-details: always
