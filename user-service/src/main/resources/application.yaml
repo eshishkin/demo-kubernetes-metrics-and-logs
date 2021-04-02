@@ -2,6 +2,17 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:3302/users
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    username: "admin"
+    password: "secret"
+
+application:
+  messaging:
+    routing-key: user.updates
+    queue: user.updates
+    exchange: user-service-exchange
 
 logging.level:
   com.mongodb.reactivestreams: DEBUG

@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EventSender sender;
 
     public Flux<UserDocument> getUsers() {
         return userRepository.findAll();
@@ -24,7 +25,8 @@ public class UserService {
     public Mono<UserDocument> create(UserDocument user) {
         return Mono.just(user)
                 .doOnNext(doc -> doc.setId(UUID.randomUUID().toString()))
-                .flatMap(userRepository::insert);
+                .flatMap(userRepository::insert)
+                .flatMap(doc -> sender.send(doc).thenReturn(doc));
     }
 
     public Mono<UserDocument> update(String userId, UserDocument user) {
@@ -34,13 +36,15 @@ public class UserService {
                     doc.setLastName(user.getLastName());
                     doc.setEmail(user.getEmail());
                 })
-                .flatMap(userRepository::save);
+                .flatMap(userRepository::save)
+                .flatMap(doc -> sender.send(doc).thenReturn(doc));
     }
 
     public Mono<UserDocument> delete(String userId) {
         return get(userId)
                 .doOnNext(doc -> doc.setDeleted(true))
-                .flatMap(userRepository::save);
+                .flatMap(userRepository::save)
+                .flatMap(doc -> sender.send(doc).thenReturn(doc));
     }
 
     public Mono<UserDocument> get(String userId) {

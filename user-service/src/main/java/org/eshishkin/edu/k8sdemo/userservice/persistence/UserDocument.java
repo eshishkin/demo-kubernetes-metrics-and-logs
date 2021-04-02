@@ -8,10 +8,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Data
 @Document(collection = "users")
-public class UserDocument {
+public class UserDocument implements Serializable {
 
     @Id
     private String id;

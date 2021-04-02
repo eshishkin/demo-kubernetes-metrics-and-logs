@@ -1,10 +1,9 @@
-package org.eshishkin.edu.k8sdemo.userservice.web;
+package org.eshishkin.edu.k8sdemo.userservice.it;
 
-import org.eshishkin.edu.k8sdemo.userservice.UserServiceApplication;
 import org.eshishkin.edu.k8sdemo.userservice.persistence.UserDocument;
+import org.eshishkin.edu.k8sdemo.userservice.web.ExceptionAdvice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,10 +11,10 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.publisher.Mono;
@@ -27,13 +26,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Testcontainers
+@SpringBootTest
 @AutoConfigureWebTestClient
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = UserServiceApplication.class)
 public class UserControllerITCase {
 
     @Container
     static MongoDBContainer MONGO = new MongoDBContainer("mongo:4.4.2");
+
+    @Container
+    static RabbitMQContainer RABBIT = new RabbitMQContainer("rabbitmq:3.8.8-management");
 
     @Autowired
     private WebTestClient webTestClient;
@@ -45,6 +46,10 @@ public class UserControllerITCase {
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.data.mongodb.uri", MONGO::getReplicaSetUrl);
+        registry.add("spring.rabbitmq.port", RABBIT::getAmqpPort);
+        registry.add("spring.rabbitmq.host", RABBIT::getHost);
+        registry.add("spring.rabbitmq.username", RABBIT::getAdminUsername);
+        registry.add("spring.rabbitmq.password", RABBIT::getAdminPassword);
     }
 
     @BeforeEach
