@@ -1,12 +1,15 @@
 package org.eshishkin.edu.k8sdemo.userservice.it;
 
+import org.eshishkin.edu.k8sdemo.userservice.model.UserEvent;
 import org.eshishkin.edu.k8sdemo.userservice.persistence.UserDocument;
 import org.eshishkin.edu.k8sdemo.userservice.web.ExceptionAdvice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -42,6 +45,8 @@ public class UserControllerITCase {
     @Autowired
     private ReactiveMongoTemplate reactiveMongoTemplate;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
@@ -72,7 +77,10 @@ public class UserControllerITCase {
                     assertEquals("John", result.getFirstName());
                     assertEquals("Doe", result.getLastName());
                     assertEquals("john.doe@example.com", result.getEmail());
+
+                    assertMessageForMessage(result.getId(), "CREATED");
                 });
+
     }
 
     @Test
@@ -97,6 +105,8 @@ public class UserControllerITCase {
                 .getResponseBody()
                 .getId();
 
+        assertMessageForMessage(id, "CREATED");
+
         webTestClient.get().uri("/users/" + id)
                 .exchange()
                 .expectStatus()
@@ -120,6 +130,8 @@ public class UserControllerITCase {
                     .exchange()
                     .expectStatus()
                     .isOk();
+
+            assertMessageForMessage("CREATED");
         });
 
         webTestClient.get().uri("/users")
@@ -145,6 +157,8 @@ public class UserControllerITCase {
                 .getResponseBody()
                 .getId();
 
+        assertMessageForMessage(id, "CREATED");
+
         //when
         UserDocument payload = prepareRequest();
         payload.setFirstName("Updated");
@@ -164,6 +178,8 @@ public class UserControllerITCase {
                     assertEquals("Doe", result.getLastName());
                     assertEquals("john.doe@example.com", result.getEmail());
                 });
+
+        assertMessageForMessage(id, "UPDATED");
     }
 
     private UserDocument prepareRequest() {
@@ -174,5 +190,28 @@ public class UserControllerITCase {
         request.setLastName("Doe");
 
         return request;
+    }
+
+    private void assertMessageForMessage(String id, String type) {
+        UserEvent event = rabbitTemplate.receiveAndConvert(
+                "user.updates",
+                1000,
+                new ParameterizedTypeReference<>() {}
+        );
+
+        assertNotNull(event);
+        assertEquals(type, event.getType());
+        assertEquals(id, event.getUserId());
+    }
+
+    private void assertMessageForMessage(String type) {
+        UserEvent event = rabbitTemplate.receiveAndConvert(
+                "user.updates",
+                1000,
+                new ParameterizedTypeReference<>() {}
+        );
+
+        assertNotNull(event);
+        assertEquals(type, event.getType());
     }
 }

@@ -2,6 +2,7 @@ package org.eshishkin.edu.k8sdemo.userservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.eshishkin.edu.k8sdemo.userservice.exception.UserNotFoundException;
+import org.eshishkin.edu.k8sdemo.userservice.model.UserEvent;
 import org.eshishkin.edu.k8sdemo.userservice.persistence.UserDocument;
 import org.eshishkin.edu.k8sdemo.userservice.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class UserService {
         return Mono.just(user)
                 .doOnNext(doc -> doc.setId(UUID.randomUUID().toString()))
                 .flatMap(userRepository::insert)
-                .flatMap(doc -> sender.send(doc).thenReturn(doc));
+                .flatMap(doc -> sender.send(UserEvent.created(doc.getId())).thenReturn(doc));
     }
 
     public Mono<UserDocument> update(String userId, UserDocument user) {
@@ -37,14 +38,14 @@ public class UserService {
                     doc.setEmail(user.getEmail());
                 })
                 .flatMap(userRepository::save)
-                .flatMap(doc -> sender.send(doc).thenReturn(doc));
+                .flatMap(doc -> sender.send(UserEvent.updated(doc.getId())).thenReturn(doc));
     }
 
     public Mono<UserDocument> delete(String userId) {
         return get(userId)
                 .doOnNext(doc -> doc.setDeleted(true))
                 .flatMap(userRepository::save)
-                .flatMap(doc -> sender.send(doc).thenReturn(doc));
+                .flatMap(doc -> sender.send(UserEvent.deleted(doc.getId())).thenReturn(doc));
     }
 
     public Mono<UserDocument> get(String userId) {
