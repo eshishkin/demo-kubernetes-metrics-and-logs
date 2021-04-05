@@ -8,3 +8,6 @@ quarkus:
   liquibase:
     change-log: liquibase/changes.xml
     migrate-at-start: true
+  micrometer:
+    binder:
+      http-client.enabled: true

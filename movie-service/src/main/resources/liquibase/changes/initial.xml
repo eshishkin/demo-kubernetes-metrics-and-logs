@@ -38,5 +38,50 @@
         </createIndex>
     </changeSet>
 
+    <changeSet author="shishkin.john@gmail.com" id="202103192130">
+        <comment>Initial schema for 'review' table</comment>
+
+        <createTable tableName="review">
+            <column name="ID" type="varchar(36)">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="MOVIE_ID" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="CONTENT" type="VARCHAR(10000)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="CREATED" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="AUTHOR_ID" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+    </changeSet>
+
+    <changeSet author="shishkin.john@gmail.com" id="202103192200">
+        <comment>Initial indexes for 'review' table</comment>
+
+        <createIndex tableName="review" indexName="REVIEW_AUTHOR_ID_IDX">
+            <column name="AUTHOR_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="review"
+                                 baseColumnNames="MOVIE_ID"
+                                 constraintName="REVIEW_MOVIE_FK"
+                                 referencedTableName="movie"
+                                 referencedColumnNames="ID"/>
+    </changeSet>
 </databaseChangeLog>
 

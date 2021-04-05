@@ -1,11 +1,13 @@
-package org.acme.resteasy;
+package org.eshishkin.edu.k8sdemo.movieservice.web;
 
-import org.acme.persistence.MapperTemplate;
-import org.acme.persistence.entity.MovieEntity;
-import org.acme.persistence.mapper.MovieMapper;
+import org.eshishkin.edu.k8sdemo.movieservice.persistence.MapperTemplate;
+import org.eshishkin.edu.k8sdemo.movieservice.persistence.entity.MovieEntity;
+import org.eshishkin.edu.k8sdemo.movieservice.persistence.mapper.MovieMapper;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -13,27 +15,21 @@ import javax.ws.rs.core.MediaType;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Path("/resteasy/hello")
-public class ExampleResource {
+@Path("/movies")
+public class MovieResource {
 
     @Inject
     MapperTemplate mapperTemplate;
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "hello";
-    }
-
-    @GET
+    @POST
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
-    public MovieEntity create() {
+    public MovieEntity create(@Valid MovieEntity request) {
         return mapperTemplate.doWithMapper(MovieMapper.class, mapper -> {
             MovieEntity entity = new MovieEntity();
             entity.setId(UUID.randomUUID().toString());
-            entity.setTitle("Title");
-            entity.setDescription("Description");
+            entity.setTitle(request.getTitle());
+            entity.setDescription(request.getTitle());
             entity.setReleased(LocalDate.now());
 
             mapper.create(entity);
@@ -42,10 +38,9 @@ public class ExampleResource {
     }
 
     @GET
-    @Path("/get/{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public MovieEntity get(@PathParam("id") UUID movieId) {
-        System.out.println("movieId" + movieId.toString());
         return mapperTemplate.doWithMapper(
                 MovieMapper.class,
                 mapper -> mapper.findById(movieId.toString())

@@ -1,4 +1,4 @@
-package org.acme.persistence.entity;
+package org.eshishkin.edu.k8sdemo.movieservice.persistence.entity;
 
 import lombok.Data;
 

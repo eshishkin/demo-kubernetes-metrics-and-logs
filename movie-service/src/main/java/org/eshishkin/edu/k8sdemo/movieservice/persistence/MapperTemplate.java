@@ -1,6 +1,6 @@
-package org.acme.persistence;
+package org.eshishkin.edu.k8sdemo.movieservice.persistence;
 
-import org.acme.persistence.mapper.BaseMapper;
+import org.eshishkin.edu.k8sdemo.movieservice.persistence.mapper.BaseMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 

@@ -1,6 +1,6 @@
-package org.acme.config;
+package org.eshishkin.edu.k8sdemo.movieservice.config;
 
-import org.acme.persistence.mapper.BaseMapper;
+import org.eshishkin.edu.k8sdemo.movieservice.persistence.mapper.BaseMapper;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -12,7 +12,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.sql.DataSource;
-import java.io.IOException;
 
 @ApplicationScoped
 public class MyBatisConfig {
@@ -22,12 +21,14 @@ public class MyBatisConfig {
 
     @Produces
     @ApplicationScoped
-    public SqlSessionFactory sqlSessionFactory() throws IOException {
+    public SqlSessionFactory sqlSessionFactory() {
         TransactionFactory transactionFactory = new JdbcTransactionFactory();
         Environment environment = new Environment("dev", transactionFactory, dataSource);
 
         Configuration configuration = new Configuration(environment);
         configuration.addMappers(BaseMapper.class.getPackageName(), BaseMapper.class);
+        configuration.setMapUnderscoreToCamelCase(true);
+
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 }

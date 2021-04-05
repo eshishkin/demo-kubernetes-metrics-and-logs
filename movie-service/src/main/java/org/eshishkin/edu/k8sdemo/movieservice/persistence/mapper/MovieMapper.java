@@ -1,6 +1,6 @@
-package org.acme.persistence.mapper;
+package org.eshishkin.edu.k8sdemo.movieservice.persistence.mapper;
 
-import org.acme.persistence.entity.MovieEntity;
+import org.eshishkin.edu.k8sdemo.movieservice.persistence.entity.MovieEntity;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
