@@ -4,6 +4,8 @@ services:
   mongo:
     image: mongo:4.2.7
     mem_limit: 64m
+    expose:
+      - "27017"
     networks:
       backend:
         aliases:
@@ -36,10 +38,13 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: secret
     networks:
       backend:
         aliases:
-          - rabbit-broker
+          - rabbit-service
 
   sender-app:
     image: eshishkin/k8s-examples/sender-service
@@ -68,6 +73,21 @@ services:
       backend:
         aliases:
           - receiver-service
+
+  user-service:
+    image: eshishkin/k8s-examples/user-service
+    mem_limit: 512m
+    expose:
+      - "8080"
+    ports:
+      - "38080:8080"
+    depends_on:
+      - mongo
+      - rabbit
+    networks:
+      backend:
+        aliases:
+          - user-service
 
 networks:
   backend:
