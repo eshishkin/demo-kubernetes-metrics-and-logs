@@ -1,10 +1,9 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:3302/users
+      uri: mongodb://mongo-service:27017/users
   rabbitmq:
-    host: "localhost"
-    port: 5672
+    addresses: "amqp://rabbit-service:5672"
     username: "admin"
     password: "secret"
 
