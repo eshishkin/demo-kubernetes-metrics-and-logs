@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>org.eshishkin.edu.k8sdemo</groupId>
 	<artifactId>user-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>user-service</name>
 	<description>K8S Demo: User Service</description>
 	<properties>
@@ -109,7 +109,17 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<image>
+						<name>eshishkin/k8s-examples/user-service</name>
+					</image>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build-image</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
