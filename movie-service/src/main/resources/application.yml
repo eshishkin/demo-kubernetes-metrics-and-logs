@@ -11,3 +11,13 @@ quarkus:
   micrometer:
     binder:
       http-client.enabled: true
+  rabbitmq:
+    address: "amqp://rabbit-service:5672"
+    username: "admin"
+    password: "secret"
+
+application:
+  messaging:
+    routing-key: movie.updates
+    queue: movie.updates
+    exchange: movie-service-exchange
