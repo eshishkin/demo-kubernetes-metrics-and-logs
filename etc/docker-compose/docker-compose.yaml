@@ -13,7 +13,7 @@ services:
 
   mysql:
     image: mysql:5.7.32
-    mem_limit: 64m
+    mem_limit: 128m
     environment:
       MYSQL_DATABASE: movie_svc
       MYSQL_USER: admin

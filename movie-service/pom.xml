@@ -19,6 +19,9 @@
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
 
+    <commons-pool.version>2.9.0</commons-pool.version>
+    <amqp-client.version>5.12.0</amqp-client.version>
+
     <!-- Because of a bug https://github.com/liquibase/liquibase/issues/1639-->
     <mysql-jdbc.version>8.0.19</mysql-jdbc.version>
   </properties>
@@ -97,7 +100,13 @@
     <dependency>
       <groupId>com.rabbitmq</groupId>
       <artifactId>amqp-client</artifactId>
-      <version>5.12.0</version>
+      <version>${amqp-client.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-pool2</artifactId>
+      <version>${commons-pool.version}</version>
     </dependency>
 
     <dependency>

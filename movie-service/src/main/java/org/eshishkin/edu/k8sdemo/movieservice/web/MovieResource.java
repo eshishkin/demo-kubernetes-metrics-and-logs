@@ -1,7 +1,11 @@
 package org.eshishkin.edu.k8sdemo.movieservice.web;
 
+import org.eshishkin.edu.k8sdemo.movieservice.config.RabbitConfig;
 import org.eshishkin.edu.k8sdemo.movieservice.persistence.MapperTemplate;
+import org.eshishkin.edu.k8sdemo.movieservice.persistence.RabbitTemplate;
 import org.eshishkin.edu.k8sdemo.movieservice.persistence.entity.MovieEntity;
+import org.eshishkin.edu.k8sdemo.movieservice.persistence.event.MovieServiceEvent;
+import org.eshishkin.edu.k8sdemo.movieservice.persistence.event.MovieServiceEvent.MessageType;
 import org.eshishkin.edu.k8sdemo.movieservice.persistence.mapper.MovieMapper;
 
 import javax.inject.Inject;
@@ -21,6 +25,12 @@ public class MovieResource {
     @Inject
     MapperTemplate mapperTemplate;
 
+    @Inject
+    RabbitTemplate rabbitTemplate;
+
+    @Inject
+    RabbitConfig rabbitConfig;
+
     @POST
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
@@ -33,6 +43,12 @@ public class MovieResource {
             entity.setReleased(LocalDate.now());
 
             mapper.create(entity);
+
+            rabbitTemplate.send(
+                    rabbitConfig.getMovieRoutingKey(),
+                    MovieServiceEvent.of(entity.getId(), MessageType.CREATED)
+            );
+
             return mapper.findById(entity.getId());
         });
     }

@@ -1,83 +1,35 @@
 package org.eshishkin.edu.k8sdemo.movieservice.config;
 
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.BuiltinExchangeType;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import lombok.SneakyThrows;
+import lombok.Getter;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
+import javax.inject.Singleton;
 
-@ApplicationScoped
+@Getter
+@Singleton
 public class RabbitConfig {
 
-    @ConfigProperty(name = "quarkus.rabbitmq.address")
+    @ConfigProperty(name = "application.messaging.rabbitmq.address")
     String url;
 
-    @ConfigProperty(name = "quarkus.rabbitmq.username")
+    @ConfigProperty(name = "application.messaging.rabbitmq.username")
     String user;
 
-    @ConfigProperty(name = "quarkus.rabbitmq.password")
+    @ConfigProperty(name = "application.messaging.rabbitmq.password")
     String password;
 
     @ConfigProperty(name = "application.messaging.exchange")
     String exchange;
 
-    @ConfigProperty(name = "application.messaging.queue")
-    String queue;
+    @ConfigProperty(name = "application.messaging.movie-queue")
+    String movieQueue;
 
-    @ConfigProperty(name = "application.messaging.routing-key")
-    String routingKey;
+    @ConfigProperty(name = "application.messaging.review-queue")
+    String reviewQueue;
 
-    private Connection connection;
-    private Channel channel;
+    @ConfigProperty(name = "application.messaging.movie-routing-key")
+    String movieRoutingKey;
 
-    @PostConstruct
-    void init() throws IOException, TimeoutException {
-        ConnectionFactory connectionFactory = createConnectionFactory();
-        connection = connectionFactory.newConnection();
-        channel = createChannel(connection);
-    }
-
-
-    @SneakyThrows
-    private Channel createChannel(Connection connection) {
-        Channel channel = connection.createChannel();
-
-        channel.exchangeDeclare(exchange, BuiltinExchangeType.DIRECT, true);
-        channel.queueBind(queue, exchange, routingKey);
-
-        return channel;
-    }
-
-    @SneakyThrows
-    private ConnectionFactory createConnectionFactory() {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setUri(url);
-        factory.setUsername(user);
-        factory.setPassword(password);
-        return factory;
-    }
-
-    @PreDestroy
-    void destroy() {
-        try {
-            channel.close();
-        } catch (IOException | TimeoutException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            connection.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    @ConfigProperty(name = "application.messaging.review-routing-key")
+    String reviewRoutingKey;
 }

@@ -4,20 +4,22 @@ quarkus:
     username: admin
     password: admin
     jdbc:
-      url: jdbc:mysql://localhost:3306/movie_svc
+      url: jdbc:mysql://mysql-service:3306/movie_svc
   liquibase:
     change-log: liquibase/changes.xml
     migrate-at-start: true
   micrometer:
     binder:
       http-client.enabled: true
-  rabbitmq:
-    address: "amqp://rabbit-service:5672"
-    username: "admin"
-    password: "secret"
 
 application:
   messaging:
-    routing-key: movie.updates
-    queue: movie.updates
+    rabbitmq:
+      address: "amqp://rabbit-service:5672"
+      username: "admin"
+      password: "secret"
     exchange: movie-service-exchange
+    movie-queue: movie.updates
+    movie-routing-key: movie.updates
+    review-queue: review.updates
+    review-routing-key: review.updates
