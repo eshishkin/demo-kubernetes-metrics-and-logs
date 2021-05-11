@@ -11,6 +11,9 @@ quarkus:
   micrometer:
     binder:
       http-client.enabled: true
+  swagger-ui:
+    always-include: true
+
 
 application:
   messaging:
