@@ -89,5 +89,20 @@ services:
         aliases:
           - user-service
 
+  movie-service:
+    image: eshishkin/k8s-examples/movie-service
+    mem_limit: 256m
+    expose:
+      - "8080"
+    ports:
+      - "48080:8080"
+    depends_on:
+      - mysql
+      - rabbit
+    networks:
+      backend:
+        aliases:
+          - movie-service
+
 networks:
   backend:

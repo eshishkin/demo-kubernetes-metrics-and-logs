@@ -22,6 +22,11 @@
     <commons-pool.version>2.9.0</commons-pool.version>
     <amqp-client.version>5.12.0</amqp-client.version>
 
+    <quarkus.container-image.build>true</quarkus.container-image.build>
+    <quarkus.container-image.group>eshishkin</quarkus.container-image.group>
+    <quarkus.container-image.name>k8s-examples/movie-service</quarkus.container-image.name>
+    <quarkus.container-image.tag>latest</quarkus.container-image.tag>
+
     <!-- Because of a bug https://github.com/liquibase/liquibase/issues/1639-->
     <mysql-jdbc.version>8.0.19</mysql-jdbc.version>
   </properties>
@@ -53,7 +58,7 @@
 
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-reactive-messaging</artifactId>
+      <artifactId>quarkus-container-image-jib</artifactId>
     </dependency>
 
     <dependency>
@@ -84,6 +89,11 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
     </dependency>
 
     <dependency>
