@@ -104,5 +104,17 @@ services:
         aliases:
           - movie-service
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    mem_limit: 256m
+    ports:
+      - "16686:16686" # /api/* endpoints and Jaeger UI at /
+      - "14268:14268" # HTTP - can accept spans directly from clients in jaeger.thrift format over binary thrift protocol
+    networks:
+      backend:
+        aliases:
+          - jaeger-collector
+
+
 networks:
   backend:
