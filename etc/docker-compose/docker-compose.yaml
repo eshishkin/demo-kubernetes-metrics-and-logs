@@ -4,10 +4,27 @@ services:
   mongo:
     image: mongo:4.2.7
     mem_limit: 64m
+    expose:
+      - "27017"
     networks:
       backend:
         aliases:
           - mongo-service
+
+  mysql:
+    image: mysql:5.7.32
+    mem_limit: 128m
+    environment:
+      MYSQL_DATABASE: movie_svc
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "3306:3306"
+    networks:
+      backend:
+        aliases:
+          - mysql-service
 
   redis:
     image: redis:6.0.7
@@ -21,10 +38,13 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: secret
     networks:
       backend:
         aliases:
-          - rabbit-broker
+          - rabbit-service
 
   sender-app:
     image: eshishkin/k8s-examples/sender-service
@@ -53,6 +73,48 @@ services:
       backend:
         aliases:
           - receiver-service
+
+  user-service:
+    image: eshishkin/k8s-examples/user-service
+    mem_limit: 512m
+    expose:
+      - "8080"
+    ports:
+      - "38080:8080"
+    depends_on:
+      - mongo
+      - rabbit
+    networks:
+      backend:
+        aliases:
+          - user-service
+
+  movie-service:
+    image: eshishkin/k8s-examples/movie-service
+    mem_limit: 256m
+    expose:
+      - "8080"
+    ports:
+      - "48080:8080"
+    depends_on:
+      - mysql
+      - rabbit
+    networks:
+      backend:
+        aliases:
+          - movie-service
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    mem_limit: 256m
+    ports:
+      - "16686:16686" # /api/* endpoints and Jaeger UI at /
+      - "14268:14268" # HTTP - can accept spans directly from clients in jaeger.thrift format over binary thrift protocol
+    networks:
+      backend:
+        aliases:
+          - jaeger-collector
+
 
 networks:
   backend:

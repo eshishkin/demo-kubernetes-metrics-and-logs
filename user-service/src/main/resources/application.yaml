@@ -1,0 +1,37 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://mongo-service:27017/users
+  rabbitmq:
+    addresses: "amqp://rabbit-service:5672"
+    username: "admin"
+    password: "secret"
+
+application:
+  messaging:
+    routing-key: user.updates
+    queue: user.updates
+    exchange: user-service-exchange
+
+logging.level:
+  com.mongodb.reactivestreams: DEBUG
+
+management:
+  metrics.export.prometheus.enabled: true
+  endpoints.web:
+    exposure.include: health,info,env,beans,prometheus,metrics
+  endpoint:
+    metrics.enabled: true
+    prometheus.enabled: true
+    health:
+      livenessstate.enabled: true
+      readinessstate.enabled: true
+      show-details: always
+      show-components: always
+      probes.enabled: true
+      rabbit.enabled: false
+      group:
+        readiness:
+          include: mongo
+          show-components: always
+          show-details: always

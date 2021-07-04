@@ -1,0 +1,38 @@
+quarkus:
+  datasource:
+    db-kind: mysql
+    username: admin
+    password: admin
+    jdbc:
+      url: jdbc:tracing:mysql://mysql-service:3306/movie_svc
+      driver: io.opentracing.contrib.jdbc.TracingDriver
+  liquibase:
+    change-log: liquibase/changes.xml
+    migrate-at-start: true
+  micrometer:
+    binder:
+      http-client.enabled: true
+  swagger-ui:
+    always-include: true
+  jaeger:
+    service-name: movie-service
+    sampler-type: const
+    sampler-param: 1
+    propagation: b3
+    endpoint: http://jaeger-collector:14268/api/traces
+  log:
+    level: INFO
+    console:
+      format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+
+application:
+  messaging:
+    rabbitmq:
+      address: "amqp://rabbit-service:5672"
+      username: "admin"
+      password: "secret"
+    exchange: movie-service-exchange
+    movie-queue: movie.updates
+    movie-routing-key: movie.updates
+    review-queue: review.updates
+    review-routing-key: review.updates

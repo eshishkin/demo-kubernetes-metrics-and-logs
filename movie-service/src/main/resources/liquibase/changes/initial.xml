@@ -1,0 +1,87 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="shishkin.john@gmail.com" id="202011162130">
+        <comment>Initial schema for 'movie' table</comment>
+
+        <createTable tableName="movie">
+            <column name="ID" type="varchar(36)">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="DESCRIPTION" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="RELEASED" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="shishkin.john@gmail.com" id="202011162140">
+        <comment>Initial indexes for 'movie' table</comment>
+
+        <createIndex tableName="movie" indexName="MOVIE_TITLE_IDX">
+            <column name="TITLE"/>
+        </createIndex>
+
+        <createIndex tableName="movie" indexName="MOVIE_RELEASED_IDX">
+            <column name="RELEASED"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="shishkin.john@gmail.com" id="202103192130">
+        <comment>Initial schema for 'review' table</comment>
+
+        <createTable tableName="review">
+            <column name="ID" type="varchar(36)">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="MOVIE_ID" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="CONTENT" type="VARCHAR(10000)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="CREATED" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="AUTHOR_ID" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+    </changeSet>
+
+    <changeSet author="shishkin.john@gmail.com" id="202103192200">
+        <comment>Initial indexes for 'review' table</comment>
+
+        <createIndex tableName="review" indexName="REVIEW_AUTHOR_ID_IDX">
+            <column name="AUTHOR_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="review"
+                                 baseColumnNames="MOVIE_ID"
+                                 constraintName="REVIEW_MOVIE_FK"
+                                 referencedTableName="movie"
+                                 referencedColumnNames="ID"/>
+    </changeSet>
+</databaseChangeLog>
+
